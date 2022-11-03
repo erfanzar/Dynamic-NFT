@@ -1,0 +1,7 @@
+npm i -g truffle --force
+git clone https://github.com/PatrickAlphaC/dungeons-and-dragons-nft.git
+cd dungeons-and-dragons-nft
+mv * ..
+cd ..
+npm i --force
+truffle obtain --solc 0.4.0
