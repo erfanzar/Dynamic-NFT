@@ -37,7 +37,8 @@ module.exports = {
         },
     },
     api_keys: {
-        etherscan: process.env.ETHERSCAN_API_KEY
+        etherscan: process.env.ETHERSCAN_API_KEY,
+        polygonscan:'aykqawueu2nvj941dqkr6d86kzg5cmj96z'
     },
     plugins: [
         'truffle-plugin-verify'
