@@ -39,6 +39,7 @@ contract DynamicNFT is ERC721, VRFConsumerBase, Ownable {
         LinkToken = _LinkToken;
         keyHash = _keyhash;
         fee = 0.1 * 10**18; // 0.1 LINK
+        _setTokenURI(0, 'https://www.halaholidays.com/nft/dnft.json');
     }
 
     function requestNewRandomCharacter(string memory name)
