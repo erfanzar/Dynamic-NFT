@@ -100,17 +100,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract DynamicNFT is ERC721{
+contract DynamicNFT is ERC721 {
     using SafeMath for uint256;
     using Strings for string;
 
-    bytes32 internal keyHash;
-    uint256 internal fee;
-    uint256 public randomResult;
-    address public VRFCoordinator;
-
     address public LinkToken;
- 
 
     struct Character {
         string name;
@@ -119,38 +113,37 @@ contract DynamicNFT is ERC721{
     Character[] public characters;
 
     string[] uri = [
-        'https://ipfs.io/ipfs/QmTJdQiXTHJXK1pFt3TyMniAzfWgjFJHvzAoCxQJrnERPM?filename=dnft-0.json',
-        'https://ipfs.io/ipfs/Qmb9xxpPWtWVPsMfGtDUhEWmb7UzpSC6cLAFPwCobzk4fc?filename=dnft-1.json',
-        'https://ipfs.io/ipfs/QmZ8wTAyezmWeBeA7H69mHoojWYFy8S2871uwrUtzSysDV?filename=dnft-2.json',
-        'https://ipfs.io/ipfs/QmZaNjYJTV2nHkUmvArY6FZr8qy3d7cyjkpHgYWgenipEv?filename=dnft-3.json',
-        'https://ipfs.io/ipfs/QmdDTuyLPFbnAfBipKmHzvucrwxtAhjV7WU1KpRZFR4U6r?filename=dnft-4.json',
-        'https://ipfs.io/ipfs/QmTvBSytyiBwjkTE9PyKEE8tA89xnkYqTER9djHCfh8Eh7?filename=dnft-5.json',
-        'https://ipfs.io/ipfs/Qmc8Fi29CccLvLXeCcKaFo7Ldcw2VjDLgY845FKVPMBeFK?filename=dnft-6.json',
-        'https://ipfs.io/ipfs/QmX5pEkagzkBJtsffJuitAqKkLhcXNGM2gC73eiKYhZ8qo?filename=dnft-7.json',
-        'https://ipfs.io/ipfs/Qmc2mweVq8bAUBEXPE2LaNLvGJ8gkqaRxumdDXg8L7PsRR?filename=dnft-8.json',
-        'https://ipfs.io/ipfs/QmRa2DSzMCPvSJjQD6s98SGRfoJo1VjPjhsvn5UVFGBPtQ?filename=dnft-9.json',
-        'https://ipfs.io/ipfs/QmR3pcNbjgq6i8JMWHEfRm4v33Z962a6Kx9ajNtPzKEzcE?filename=dnft-10.json',
-        'https://ipfs.io/ipfs/QmYNVa1AnE8uYddfagA4wu8FA5WdJxVjzxS9XTiBBQYoty?filename=dnft-11.json',
-        'https://ipfs.io/ipfs/QmTbdvQYA17zTxGHHWUrYLTBhowkqSdCxnGGX8L6g5JpeP?filename=dnft-12.json',
-        'https://ipfs.io/ipfs/QmSZF5pHa7Haf9m96EL4nAx2Y98wDusZEdhrbR8Vygc3H3?filename=dnft-13.json',
-        'https://ipfs.io/ipfs/QmYebVo3jQgrAMorYF8zhzpFQjSXaDjeHUCtWA4AJFuWyH?filename=dnft-14.json'
-
+        // "https://halaholidays.com/nft/dnft.json",
+        "https://ipfs.io/ipfs/QmTJdQiXTHJXK1pFt3TyMniAzfWgjFJHvzAoCxQJrnERPM?filename=dnft-0.json",
+        "https://ipfs.io/ipfs/Qmb9xxpPWtWVPsMfGtDUhEWmb7UzpSC6cLAFPwCobzk4fc?filename=dnft-1.json",
+        "https://ipfs.io/ipfs/QmZ8wTAyezmWeBeA7H69mHoojWYFy8S2871uwrUtzSysDV?filename=dnft-2.json",
+        "https://ipfs.io/ipfs/QmZaNjYJTV2nHkUmvArY6FZr8qy3d7cyjkpHgYWgenipEv?filename=dnft-3.json",
+        "https://ipfs.io/ipfs/QmdDTuyLPFbnAfBipKmHzvucrwxtAhjV7WU1KpRZFR4U6r?filename=dnft-4.json",
+        "https://ipfs.io/ipfs/QmTvBSytyiBwjkTE9PyKEE8tA89xnkYqTER9djHCfh8Eh7?filename=dnft-5.json",
+        "https://ipfs.io/ipfs/Qmc8Fi29CccLvLXeCcKaFo7Ldcw2VjDLgY845FKVPMBeFK?filename=dnft-6.json",
+        "https://ipfs.io/ipfs/QmX5pEkagzkBJtsffJuitAqKkLhcXNGM2gC73eiKYhZ8qo?filename=dnft-7.json",
+        "https://ipfs.io/ipfs/Qmc2mweVq8bAUBEXPE2LaNLvGJ8gkqaRxumdDXg8L7PsRR?filename=dnft-8.json",
+        "https://ipfs.io/ipfs/QmRa2DSzMCPvSJjQD6s98SGRfoJo1VjPjhsvn5UVFGBPtQ?filename=dnft-9.json",
+        "https://ipfs.io/ipfs/QmR3pcNbjgq6i8JMWHEfRm4v33Z962a6Kx9ajNtPzKEzcE?filename=dnft-10.json",
+        "https://ipfs.io/ipfs/QmYNVa1AnE8uYddfagA4wu8FA5WdJxVjzxS9XTiBBQYoty?filename=dnft-11.json",
+        "https://ipfs.io/ipfs/QmTbdvQYA17zTxGHHWUrYLTBhowkqSdCxnGGX8L6g5JpeP?filename=dnft-12.json",
+        "https://ipfs.io/ipfs/QmSZF5pHa7Haf9m96EL4nAx2Y98wDusZEdhrbR8Vygc3H3?filename=dnft-13.json",
+        "https://ipfs.io/ipfs/QmYebVo3jQgrAMorYF8zhzpFQjSXaDjeHUCtWA4AJFuWyH?filename=dnft-14.json"
     ];
 
-   
-    constructor(
-        address to,
-        uint256 tokenId
-    ) public ERC721("DynamicNFT", "D&D"){
+    uint256 tkid;
+    uint256 index = 0;
+    address ta;
+
+    constructor(address to, uint256 tokenId)
+        public
+        ERC721("DynamicNFT", "D&D")
+    {
+        ta = to;
+        tkid = tokenId;
         _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri[0]);
-    }   
-    
-
-    function baseTokenURI() public view returns (string memory) {
-        return uri[0];
+        _setTokenURI(tokenId, uri[index]);
     }
-
 
     function getTokenURI(uint256 tokenId) public view returns (string memory) {
         return tokenURI(tokenId);
@@ -164,18 +157,17 @@ contract DynamicNFT is ERC721{
         _setTokenURI(tokenId, _tokenURI);
     }
 
-    function safeMint(address to) public {
+    function safeMint(address to,uint256 ondox) public {
         // uint256 tokenId = _tokenIdCounter.current();
         uint256 tokenId = 0;
+        _setTokenURI(tokenId, uri[ondox]);
         _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri[0]);
+        _setTokenURI(tokenId, uri[ondox]);
     }
 
-    function setLevel(uint256 tokenId,uint256 level) public{
+    function setLevel(uint256 tokenId, uint256 level) public {
         _setTokenURI(tokenId, uri[level]);
     }
-
-
 
     function getNumberOfCharacters() public view returns (uint256) {
         return characters.length;
@@ -184,21 +176,8 @@ contract DynamicNFT is ERC721{
     function getCharacterOverView(uint256 tokenId)
         public
         view
-        returns (
-            string memory
-        )
+        returns (string memory)
     {
-        return  characters[tokenId].name;
-    }
-
-    
-
-    function sqrt(uint256 x)  internal  pure  returns (uint256 y) {
-        uint256 z = (x + 1) / 2;
-        y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
-        }
+        return characters[tokenId].name;
     }
 }
