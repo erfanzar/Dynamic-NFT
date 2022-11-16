@@ -29,6 +29,20 @@ module.exports = {
             confirmations: 2,
             timeoutBlocks: 200,
             skipDryRun: true
+        }, 
+        testnet: {
+            provider: () => new HDWalletProvider(process.env.MNEMONIC, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+            network_id: 97,
+            confirmations: 10,
+            timeoutBlocks: 200,
+            skipDryRun: true
+        },
+        bsc: {
+            provider: () => new HDWalletProvider(process.env.MNEMONIC, `https://bsc-dataseed1.binance.org`),
+            network_id: 56,
+            confirmations: 10,
+            timeoutBlocks: 200,
+            skipDryRun: true
         },
     },
     compilers: {
@@ -38,7 +52,8 @@ module.exports = {
     },
     api_keys: {
         etherscan: process.env.ETHERSCAN_API_KEY,
-        polygonscan:'aykqawueu2nvj941dqkr6d86kzg5cmj96z'
+        polygonscan:'aykqawueu2nvj941dqkr6d86kzg5cmj96z',
+        bscscan:'y78prxnaft2yv1xwtjefx321evz28h4avw'
     },
     plugins: [
         'truffle-plugin-verify'
