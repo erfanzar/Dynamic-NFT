@@ -119,16 +119,22 @@ contract DynamicNFT is ERC721{
     Character[] public characters;
 
     string[] uri = [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        ''
+        'https://ipfs.io/ipfs/QmTJdQiXTHJXK1pFt3TyMniAzfWgjFJHvzAoCxQJrnERPM?filename=dnft-0.json',
+        'https://ipfs.io/ipfs/Qmb9xxpPWtWVPsMfGtDUhEWmb7UzpSC6cLAFPwCobzk4fc?filename=dnft-1.json',
+        'https://ipfs.io/ipfs/QmZ8wTAyezmWeBeA7H69mHoojWYFy8S2871uwrUtzSysDV?filename=dnft-2.json',
+        'https://ipfs.io/ipfs/QmZaNjYJTV2nHkUmvArY6FZr8qy3d7cyjkpHgYWgenipEv?filename=dnft-3.json',
+        'https://ipfs.io/ipfs/QmdDTuyLPFbnAfBipKmHzvucrwxtAhjV7WU1KpRZFR4U6r?filename=dnft-4.json',
+        'https://ipfs.io/ipfs/QmTvBSytyiBwjkTE9PyKEE8tA89xnkYqTER9djHCfh8Eh7?filename=dnft-5.json',
+        'https://ipfs.io/ipfs/Qmc8Fi29CccLvLXeCcKaFo7Ldcw2VjDLgY845FKVPMBeFK?filename=dnft-6.json',
+        'https://ipfs.io/ipfs/QmX5pEkagzkBJtsffJuitAqKkLhcXNGM2gC73eiKYhZ8qo?filename=dnft-7.json',
+        'https://ipfs.io/ipfs/Qmc2mweVq8bAUBEXPE2LaNLvGJ8gkqaRxumdDXg8L7PsRR?filename=dnft-8.json',
+        'https://ipfs.io/ipfs/QmRa2DSzMCPvSJjQD6s98SGRfoJo1VjPjhsvn5UVFGBPtQ?filename=dnft-9.json',
+        'https://ipfs.io/ipfs/QmR3pcNbjgq6i8JMWHEfRm4v33Z962a6Kx9ajNtPzKEzcE?filename=dnft-10.json',
+        'https://ipfs.io/ipfs/QmYNVa1AnE8uYddfagA4wu8FA5WdJxVjzxS9XTiBBQYoty?filename=dnft-11.json',
+        'https://ipfs.io/ipfs/QmTbdvQYA17zTxGHHWUrYLTBhowkqSdCxnGGX8L6g5JpeP?filename=dnft-12.json',
+        'https://ipfs.io/ipfs/QmSZF5pHa7Haf9m96EL4nAx2Y98wDusZEdhrbR8Vygc3H3?filename=dnft-13.json',
+        'https://ipfs.io/ipfs/QmYebVo3jQgrAMorYF8zhzpFQjSXaDjeHUCtWA4AJFuWyH?filename=dnft-14.json'
+
     ];
 
    
@@ -141,9 +147,8 @@ contract DynamicNFT is ERC721{
     }   
     
 
-    function baseTokenURI() public pure returns (string memory) {
-        return
-            "https://ipfs.io/ipfs/QmPPTx3FbuRfNjpxS6kDFgqxV5XFRDsnSS5FDdFDWMJMX7?filename=dnft.json";
+    function baseTokenURI() public view returns (string memory) {
+        return uri[0];
     }
 
 
