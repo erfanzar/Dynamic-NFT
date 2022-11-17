@@ -22,59 +22,93 @@ pragma solidity ^0.8.9;
 // import "../node_modules/OpenZeppelin/contracts/token/ERC721/ERC721.sol";
 // import "../node_modules/OpenZeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 // import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-contract DynamicNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract DynamicNFT is ERC721, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
     uint256 public interval;
     uint256 public lastTimeStamp;
-
+    uint256 public counter;
     event TokensUpdated(uint marketTrend);
+   
+    constructor(address to) ERC721("DynamicNFT", "ALMD") {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(to, tokenId);
+        string memory DEFAULTVAL = uris[6];
+        _setTokenURI(tokenId, DEFAULTVAL);
 
-    constructor() ERC721("DynamicNFT", "ALMD") {}
+    }
 
+    function checkUpKeep(bytes calldata) external view  returns (bool upkeepNeeded){
+        upkeepNeeded  = (block.timestamp-lastTimeStamp)>interval;
+    }
+    
+    
+    function performUpKeep(bytes calldata) external {
+        if((block.timestamp - lastTimeStamp) > interval){
+            lastTimeStamp = block.timestamp;
+            counter = counter +1;
+        }
+    }
+    string private _customBaseURI ;
     AggregatorV3Interface public priceFeed;
     int256 public currentPrice;
 
-    string[] uris = [
-        "https://ipfs.io/ipfs/Qmc2mweVq8bAUBEXPE2LaNLvGJ8gkqaRxumdDXg8L7PsRR?filename=dnft-8.json",
-        "https://ipfs.io/ipfs/QmTJdQiXTHJXK1pFt3TyMniAzfWgjFJHvzAoCxQJrnERPM?filename=dnft-0.json"
+    string [] uris = [
+        "https://www.halaholidays.com/nft/a-0.json",
+        "https://www.halaholidays.com/nft/a-1.json",
+        "https://www.halaholidays.com/nft/a-2.json",
+        "https://www.halaholidays.com/nft/a-3.json",
+        "https://www.halaholidays.com/nft/a-4.json",
+        "https://www.halaholidays.com/nft/a-5.json",
+        "https://www.halaholidays.com/nft/a-6.json",
+        "https://www.halaholidays.com/nft/a-7.json",
+        "https://www.halaholidays.com/nft/a-8.json",
+        "https://www.halaholidays.com/nft/a-9.json",
+        "https://www.halaholidays.com/nft/a-10.json",
+        "https://www.halaholidays.com/nft/a-11.json",
+        "https://www.halaholidays.com/nft/a-12.json",
+        "https://www.halaholidays.com/nft/a-13.json",
+        "https://www.halaholidays.com/nft/a-14.json"
     ];
+
+
+
+    function setBaseURI(string memory newBaseURI) public {
+        _customBaseURI = newBaseURI;
+    }
 
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
-        string memory DEFAULTVAL = uris[0];
+        string memory DEFAULTVAL = uris[6];
         _setTokenURI(tokenId, DEFAULTVAL);
     }
 
     
+    function _baseURI() internal view virtual override returns(string memory){
+        return '';
+    }
 
     function setTokenURI (uint level) public onlyOwner{
+        _setTokenURI(0, uris[level]);
         for (uint i=0 ; i<_tokenIdCounter.current();i++){
             _setTokenURI(i, uris[level]);
         }
-        emit TokensUpdated(level);
+        // emit TokensUpdated(level);
     }
 
     // The following functions are overrides required by Solidity.
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        uint256 batchSize
-    ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, tokenId, batchSize);
-    }
+    // following crc must load up
 
     function _burn(uint256 tokenId)
         internal
@@ -92,12 +126,4 @@ contract DynamicNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         return super.tokenURI(tokenId);
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
-    }
 }
